@@ -454,43 +454,121 @@
 
   /* ========= REELS VIEW ========= */
   #reels-view {
+    position: relative;
     height: calc(100vh - 170px);
-    overflow-y: scroll;
-    scroll-snap-type: y mandatory;
-    scrollbar-width: none;
-  }
-  #reels-view::-webkit-scrollbar { display: none; }
-
-  .reel-slide {
-    height: calc(100vh - 170px);
-    scroll-snap-align: start;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
-    padding: 20px;
   }
-  .reel-slide .iphone {
+
+  /* The phone sits fixed in the centre; nothing inside the reels-view scrolls — we scroll the inner video stack instead */
+  .reels-stage {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 48px;
+  }
+
+  .reels-iphone {
+    position: relative;
     width: 340px;
     height: min(700px, calc(100vh - 220px));
+    background: #1a1a1a;
+    border-radius: 44px;
+    padding: 8px;
+    box-shadow:
+      inset 0 0 0 2px #2a2a2a,
+      0 0 0 2px #000,
+      0 30px 60px rgba(0,0,0,0.6);
+    flex-shrink: 0;
   }
-  .reel-slide .iphone::before { width: 100px; height: 26px; top: 14px; }
-  .reel-slide .iphone::after { top: 140px; height: 60px; }
-  .reel-slide .screen { border-radius: 36px; }
-  .reel-slide .iphone { border-radius: 44px; }
-
-  .reel-side-info {
+  .reels-iphone::before {
+    content: '';
     position: absolute;
-    left: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    max-width: 260px;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 26px;
+    background: #000;
+    border-radius: 16px;
+    z-index: 50;
+  }
+  .reels-iphone::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 140px;
+    width: 3px;
+    height: 60px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+  .reels-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 36px;
+    overflow: hidden;
+    position: relative;
+    touch-action: pan-y;
+  }
+
+  /* Each reel slide inside the phone — absolutely stacked, moved by transform */
+  .reel-inner {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+    transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1);
+  }
+  .reel-inner.dragging {
+    transition: none;
+  }
+
+  .reel-slot {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 100%;
+  }
+
+  .reel-slot .media-el {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+  }
+
+  /* The IG chrome inside each reel slot — stays fixed visually because the phone does */
+  .reel-slot .ig-chrome-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 4;
+  }
+  .reel-slot .ig-chrome-layer .status-bar,
+  .reel-slot .ig-chrome-layer .ig-top,
+  .reel-slot .ig-chrome-layer .ig-right,
+  .reel-slot .ig-chrome-layer .ig-bottom {
+    pointer-events: auto;
+  }
+
+  /* Side info (updates as you scroll) — desktop only */
+  .reels-side {
+    width: 240px;
+    flex-shrink: 0;
     display: none;
   }
   @media (min-width: 1100px) {
-    .reel-side-info { display: block; }
+    .reels-side { display: block; }
   }
-  .reel-side-info .filename {
+  .reels-side .filename {
     font-family: monospace;
     font-size: 11px;
     color: var(--text-dim);
@@ -498,26 +576,58 @@
     word-break: break-all;
     line-height: 1.4;
   }
-  .reel-side-info .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .reels-side .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
 
-  .reel-counter {
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
+  .reels-counter {
+    width: 80px;
+    flex-shrink: 0;
     font-family: var(--font-display);
     font-size: 13px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--text-muted);
     writing-mode: vertical-rl;
-    transform: translateY(-50%) rotate(180deg);
+    transform: rotate(180deg);
+    text-align: center;
     display: none;
   }
   @media (min-width: 1100px) {
-    .reel-counter { display: block; }
+    .reels-counter { display: block; }
   }
-  .reel-counter .current { color: var(--yellow); font-weight: 700; }
+  .reels-counter .current { color: var(--yellow); font-weight: 700; font-size: 16px; }
+
+  /* Pagination arrows — desktop clickable, mobile uses touch swipe */
+  .reels-nav-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.6);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 30;
+    transition: all 0.15s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+  .reels-nav-btn:hover {
+    background: rgba(255, 224, 0, 0.15);
+    border-color: var(--yellow);
+    color: var(--yellow);
+  }
+  .reels-nav-btn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+  }
+  .reels-nav-btn.up { top: 20px; }
+  .reels-nav-btn.down { bottom: 20px; }
+  .reels-nav-btn svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; }
 
   .reel-nav-hint {
     position: fixed;
@@ -970,16 +1080,31 @@ function renderGrid() {
 }
 
 /* ================================================================
-   RENDER REELS
+   RENDER REELS — phone stays put, videos scroll inside it
 ================================================================ */
+const reelsState = {
+  currentIdx: 0,
+  filtered: [],
+  phoneHeight: 0,
+  isAnimating: false,
+  touchStartY: null,
+  touchCurrentY: null,
+  wheelAccumulator: 0,
+  wheelLastFired: 0,
+};
+
 function renderReels() {
   const container = document.getElementById('reels-view');
   const filtered = filteredAssets();
+  reelsState.filtered = filtered;
+  reelsState.currentIdx = 0;
 
-  container.querySelectorAll('.reel-slide').forEach(s => {
-    if (s._carouselInterval) clearInterval(s._carouselInterval);
-  });
+  // Clean up previous
   container.querySelectorAll('video.media-el').forEach(v => videoObserver.unobserve(v));
+  if (container._carouselIntervals) {
+    container._carouselIntervals.forEach(clearInterval);
+  }
+  container._carouselIntervals = [];
   container.innerHTML = '';
 
   if (filtered.length === 0) {
@@ -987,50 +1112,246 @@ function renderReels() {
     return;
   }
 
+  // Build the stage: [counter] [phone with inner scrolling stack] [side info]
+  const stage = document.createElement('div');
+  stage.className = 'reels-stage';
+
+  // Counter (left on desktop)
+  const counter = document.createElement('div');
+  counter.className = 'reels-counter';
+  counter.id = 'reels-counter';
+  counter.innerHTML = `<span class="current">${String(reelsState.currentIdx + 1).padStart(2, '0')}</span> / ${String(filtered.length).padStart(2, '0')}`;
+  stage.appendChild(counter);
+
+  // The iPhone frame (stays fixed)
+  const iphone = document.createElement('div');
+  iphone.className = 'reels-iphone';
+  const screen = document.createElement('div');
+  screen.className = 'reels-screen';
+  iphone.appendChild(screen);
+
+  // Up/Down nav buttons (inside the phone, over the video)
+  const upBtn = document.createElement('button');
+  upBtn.className = 'reels-nav-btn up';
+  upBtn.id = 'reels-up-btn';
+  upBtn.setAttribute('aria-label', 'Previous reel');
+  upBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="6 15 12 9 18 15"/></svg>';
+  upBtn.addEventListener('click', () => goToReel(reelsState.currentIdx - 1));
+  screen.appendChild(upBtn);
+
+  const downBtn = document.createElement('button');
+  downBtn.className = 'reels-nav-btn down';
+  downBtn.id = 'reels-down-btn';
+  downBtn.setAttribute('aria-label', 'Next reel');
+  downBtn.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>';
+  downBtn.addEventListener('click', () => goToReel(reelsState.currentIdx + 1));
+  screen.appendChild(downBtn);
+
+  // Inner stack — contains all slides, moved by transform:translateY
+  const innerStack = document.createElement('div');
+  innerStack.className = 'reel-inner';
+  innerStack.id = 'reels-inner-stack';
+
   filtered.forEach((asset, i) => {
-    const slide = document.createElement('section');
-    slide.className = 'reel-slide';
-    slide.dataset.idx = i;
+    const slot = document.createElement('div');
+    slot.className = 'reel-slot';
+    slot.style.top = (i * 100) + '%';
+    slot.dataset.idx = i;
 
-    const card = buildCard(asset, { reels: true });
-    slide.appendChild(card);
+    // Media
+    const mediaWrap = document.createElement('div');
+    mediaWrap.style.cssText = 'position:absolute;inset:0;background:#000;';
+    mediaWrap.innerHTML = mediaHTML(asset);
+    slot.appendChild(mediaWrap);
 
-    // Side info panel (desktop only, via CSS)
-    const info = document.createElement('div');
-    info.className = 'reel-side-info';
-    const tags = [];
-    if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
-    asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
-    asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
-    info.innerHTML = `
-      <div class="filename">${escapeHTML(asset.filename)}</div>
-      <div class="tags">${tags.join('')}</div>
-    `;
-    slide.appendChild(info);
+    // IG chrome layer (per-slot so the overlay matches per-asset captions)
+    const chromeLayer = document.createElement('div');
+    chromeLayer.className = 'ig-chrome-layer';
+    chromeLayer.innerHTML = chromeHTML(asset);
+    slot.appendChild(chromeLayer);
 
-    const counter = document.createElement('div');
-    counter.className = 'reel-counter';
-    counter.innerHTML = `<span class="current">${String(i + 1).padStart(2, '0')}</span> / ${String(filtered.length).padStart(2, '0')}`;
-    slide.appendChild(counter);
+    innerStack.appendChild(slot);
 
-    container.appendChild(slide);
-
-    // Pick up the carousel interval from the inner card
-    if (card._carouselInterval) slide._carouselInterval = card._carouselInterval;
+    // Carousel auto-advance if applicable
+    if (asset.type === 'carousel') {
+      const imgs = mediaWrap.querySelectorAll('.carousel-img');
+      const dots = mediaWrap.querySelectorAll('.carousel-dots .dot');
+      let idx = 0;
+      const interval = setInterval(() => {
+        idx = (idx + 1) % imgs.length;
+        imgs.forEach((im, j) => im.style.opacity = (j === idx ? '1' : '0'));
+        dots.forEach((d, j) => d.classList.toggle('active', j === idx));
+      }, 2200);
+      container._carouselIntervals.push(interval);
+    }
   });
 
-  // Nav hint (once)
+  screen.appendChild(innerStack);
+  stage.appendChild(iphone);
+
+  // Side info (right on desktop)
+  const side = document.createElement('div');
+  side.className = 'reels-side';
+  side.id = 'reels-side';
+  updateSideInfo(side, filtered[0]);
+  stage.appendChild(side);
+
+  container.appendChild(stage);
+
+  // Nav hint (bottom of viewport)
   if (!document.getElementById('reel-nav-hint')) {
     const hint = document.createElement('div');
     hint.className = 'reel-nav-hint';
     hint.id = 'reel-nav-hint';
-    hint.innerHTML = `Scroll <span class="arrow">↓</span>`;
+    hint.innerHTML = `Scroll or swipe <span class="arrow">↓</span>`;
     document.body.appendChild(hint);
   }
   document.getElementById('reel-nav-hint').style.display =
     (state.currentTab === 'reels' && filtered.length > 1) ? 'flex' : 'none';
 
+  // Click-to-play on the whole screen area
+  screen.addEventListener('click', (e) => {
+    // Only trigger if clicking empty area (not nav buttons)
+    if (e.target.closest('.reels-nav-btn')) return;
+    const active = innerStack.children[reelsState.currentIdx];
+    if (!active) return;
+    const v = active.querySelector('video.media-el');
+    if (v) tryPlay(v);
+  });
+
+  attachReelsGestures(container, screen);
+  updateReelsUI();
   attachObservers(container);
+  // Play the first video
+  setTimeout(() => {
+    const firstVideo = innerStack.children[0]?.querySelector('video.media-el');
+    if (firstVideo) tryPlay(firstVideo);
+  }, 100);
+}
+
+function updateSideInfo(sideEl, asset) {
+  const tags = [];
+  if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
+  asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
+  asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
+  sideEl.innerHTML = `
+    <div class="filename">${escapeHTML(asset.filename)}</div>
+    <div class="tags">${tags.join('')}</div>
+  `;
+}
+
+function updateReelsUI() {
+  const stack = document.getElementById('reels-inner-stack');
+  if (!stack) return;
+
+  stack.style.transform = `translateY(${-reelsState.currentIdx * 100}%)`;
+
+  // Update counter
+  const counter = document.getElementById('reels-counter');
+  if (counter) {
+    counter.innerHTML = `<span class="current">${String(reelsState.currentIdx + 1).padStart(2, '0')}</span> / ${String(reelsState.filtered.length).padStart(2, '0')}`;
+  }
+
+  // Update side info
+  const side = document.getElementById('reels-side');
+  if (side) updateSideInfo(side, reelsState.filtered[reelsState.currentIdx]);
+
+  // Update nav buttons
+  const upBtn = document.getElementById('reels-up-btn');
+  const downBtn = document.getElementById('reels-down-btn');
+  if (upBtn) upBtn.disabled = reelsState.currentIdx === 0;
+  if (downBtn) downBtn.disabled = reelsState.currentIdx === reelsState.filtered.length - 1;
+
+  // Pause all videos except current; play current
+  const slots = stack.querySelectorAll('.reel-slot');
+  slots.forEach((slot, i) => {
+    const v = slot.querySelector('video.media-el');
+    if (!v) return;
+    if (i === reelsState.currentIdx) {
+      tryPlay(v);
+    } else {
+      v.pause();
+    }
+  });
+}
+
+function goToReel(idx) {
+  if (idx < 0 || idx >= reelsState.filtered.length) return;
+  if (reelsState.isAnimating) return;
+  reelsState.currentIdx = idx;
+  reelsState.isAnimating = true;
+  updateReelsUI();
+  setTimeout(() => { reelsState.isAnimating = false; }, 450);
+}
+
+function attachReelsGestures(container, screen) {
+  // Mouse wheel / trackpad — accumulate deltaY, fire at threshold
+  container.addEventListener('wheel', (e) => {
+    if (state.currentTab !== 'reels') return;
+    e.preventDefault();
+    const now = Date.now();
+    if (now - reelsState.wheelLastFired < 500) return; // debounce
+    reelsState.wheelAccumulator += e.deltaY;
+    if (Math.abs(reelsState.wheelAccumulator) > 30) {
+      if (reelsState.wheelAccumulator > 0) {
+        goToReel(reelsState.currentIdx + 1);
+      } else {
+        goToReel(reelsState.currentIdx - 1);
+      }
+      reelsState.wheelAccumulator = 0;
+      reelsState.wheelLastFired = now;
+    }
+  }, { passive: false });
+
+  // Touch — swipe up/down inside the screen
+  let dragStartY = null;
+  let dragStartIdx = 0;
+  screen.addEventListener('touchstart', (e) => {
+    if (state.currentTab !== 'reels') return;
+    dragStartY = e.touches[0].clientY;
+    dragStartIdx = reelsState.currentIdx;
+    const stack = document.getElementById('reels-inner-stack');
+    if (stack) stack.classList.add('dragging');
+  }, { passive: true });
+
+  screen.addEventListener('touchmove', (e) => {
+    if (dragStartY === null) return;
+    const dy = e.touches[0].clientY - dragStartY;
+    const stack = document.getElementById('reels-inner-stack');
+    if (!stack) return;
+    // Rubber-band: show partial movement as user drags
+    const phoneHeight = screen.offsetHeight;
+    const pct = (dy / phoneHeight) * 100;
+    stack.style.transform = `translateY(calc(${-dragStartIdx * 100}% + ${pct}%))`;
+  }, { passive: true });
+
+  screen.addEventListener('touchend', (e) => {
+    if (dragStartY === null) return;
+    const stack = document.getElementById('reels-inner-stack');
+    if (stack) stack.classList.remove('dragging');
+    const dy = (e.changedTouches[0]?.clientY ?? dragStartY) - dragStartY;
+    const threshold = screen.offsetHeight * 0.2;
+    if (dy < -threshold && reelsState.currentIdx < reelsState.filtered.length - 1) {
+      goToReel(reelsState.currentIdx + 1);
+    } else if (dy > threshold && reelsState.currentIdx > 0) {
+      goToReel(reelsState.currentIdx - 1);
+    } else {
+      updateReelsUI(); // snap back
+    }
+    dragStartY = null;
+  }, { passive: true });
+
+  // Keyboard
+  document.addEventListener('keydown', (e) => {
+    if (state.currentTab !== 'reels') return;
+    if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      e.preventDefault();
+      goToReel(reelsState.currentIdx + 1);
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      e.preventDefault();
+      goToReel(reelsState.currentIdx - 1);
+    }
+  });
 }
 
 /* ================================================================
