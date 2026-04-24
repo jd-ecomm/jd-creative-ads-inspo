@@ -683,6 +683,134 @@
   }
   footer strong { color: var(--yellow); }
 
+  /* ========= STAR + PRIORITY ========= */
+  .star-btn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 32px;
+    height: 32px;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 8;
+    transition: all 0.15s ease;
+  }
+  .star-btn:hover { background: rgba(255, 224, 0, 0.25); }
+  .star-btn svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; }
+  .star-btn.active svg { fill: var(--yellow); stroke: var(--yellow); filter: drop-shadow(0 0 8px rgba(255,224,0,0.6)); }
+
+  /* Priority pills on card */
+  .priority-badge {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 700;
+    display: inline-block;
+  }
+  .priority-badge.high { background: #ff3b30; color: #fff; }
+  .priority-badge.medium { background: #ff9500; color: #000; }
+  .priority-badge.low { background: #333; color: #888; }
+  .priority-badge.none { display: none; }
+
+  /* Priority picker inline on card */
+  .priority-picker {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    align-items: center;
+  }
+  .priority-picker-label {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-right: 4px;
+  }
+  .priority-btn {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 9px;
+    padding: 3px 7px;
+    border-radius: 100px;
+    font-weight: 700;
+    border: 1px solid var(--border-strong);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .priority-btn:hover { color: var(--text); }
+  .priority-btn.active.high { background: #ff3b30; border-color: #ff3b30; color: #fff; }
+  .priority-btn.active.medium { background: #ff9500; border-color: #ff9500; color: #000; }
+  .priority-btn.active.low { background: #555; border-color: #555; color: #fff; }
+  .priority-btn.clear { opacity: 0.5; }
+  .priority-btn.clear:hover { opacity: 1; color: var(--yellow); border-color: var(--yellow); }
+
+  /* Filter chip variants for priority */
+  .chip.priority-high { border-color: #ff3b30; color: #ff3b30; }
+  .chip.priority-high.active { background: #ff3b30; color: #fff; border-color: #ff3b30; }
+  .chip.priority-medium { border-color: #ff9500; color: #ff9500; }
+  .chip.priority-medium.active { background: #ff9500; color: #000; border-color: #ff9500; }
+  .chip.priority-low { border-color: #777; color: #999; }
+  .chip.priority-low.active { background: #777; color: #fff; border-color: #777; }
+  .chip.starred-only::before { content: '★ '; color: var(--yellow); }
+  .chip.starred-only.active::before { content: '★ '; color: #000; }
+
+  /* Loading state for GitHub API fetch */
+  .loading-state {
+    padding: 80px 40px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .loading-state .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--yellow);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Reset button for star/priority data */
+  .data-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .data-action-btn {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 10px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .data-action-btn:hover { color: var(--yellow); border-color: var(--yellow); }
+
+  /* Star overlay for iPhone in reels view */
+  .reels-iphone .star-btn { top: 18px; left: 18px; z-index: 60; }
+
   /* ========= RESPONSIVE ========= */
   @media (max-width: 720px) {
     .top-header { padding: 20px 20px 14px; }
@@ -793,6 +921,15 @@
 
 <div class="filter-bar">
   <div class="filter-group">
+    <div class="filter-group-label">Priority</div>
+    <div class="filter-chips" id="filter-priority">
+      <button class="chip starred-only" data-filter="starred">Starred only</button>
+      <button class="chip priority-high" data-filter="priority-high">High</button>
+      <button class="chip priority-medium" data-filter="priority-medium">Medium</button>
+      <button class="chip priority-low" data-filter="priority-low">Low</button>
+    </div>
+  </div>
+  <div class="filter-group">
     <div class="filter-group-label">Brand / Inspiration Source</div>
     <div class="filter-chips" id="filter-brands"></div>
   </div>
@@ -810,7 +947,10 @@
   </div>
   <div class="filter-actions">
     <div class="result-count"><strong id="result-count">0</strong> assets showing</div>
-    <button class="clear-btn" id="clear-btn">Clear All Filters</button>
+    <div style="display:flex;gap:8px;">
+      <button class="data-action-btn" id="reset-priorities-btn" title="Clear all your starred/priority settings in this browser">Reset My Priorities</button>
+      <button class="clear-btn" id="clear-btn">Clear All Filters</button>
+    </div>
   </div>
 </div>
 
@@ -833,7 +973,7 @@
 </footer>
 
 <script>
-window.ASSETS = [{"type": "video", "filename": "AprilLockhart-DM-UGC-SpeaktoCamera.mp4", "path": "AprilLockhart-DM-UGC-SpeaktoCamera.mp4", "brand": "Dr Martens", "creator": "April Lockhart", "styles": ["UGC"], "formats": ["Speak to Camera"], "caption": "The drop you've been watching."}, {"type": "video", "filename": "DM-UGC-OnFeet-Outdoor-VID.mp4", "path": "DM-UGC-OnFeet-Outdoor-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Outdoor", "On Feet"], "caption": "Made for the rotation."}, {"type": "video", "filename": "DM-UGC-Unboxing-Multiproduct-VID.mp4", "path": "DM-UGC-Unboxing-Multiproduct-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Unboxing"], "caption": "New in. Only at JD."}, {"type": "video", "filename": "DM-UGC-Unboxing-VID.mp4", "path": "DM-UGC-Unboxing-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Unboxing"], "caption": "Cop before they go."}, {"type": "video", "filename": "DM-UGC-Unboxing2-VID.mp4", "path": "DM-UGC-Unboxing2-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Unboxing"], "caption": "Step out. Stand out."}, {"type": "video", "filename": "Footlocker-UGC-Model-VID.mp4", "path": "Footlocker-UGC-Model-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Model"], "caption": "The ones you'll actually wear."}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-Unboxing-VID.mp4", "path": "Footlocker-UGC-Multiproduct-Unboxing-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Unboxing"], "caption": "Unboxed and already sold out."}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-VID.mp4", "path": "Footlocker-UGC-Multiproduct-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product"], "caption": "Your next go-to."}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-VID2.mp4", "path": "Footlocker-UGC-Multiproduct-VID2.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product"], "caption": "Built for every day, styled for every night."}, {"type": "video", "filename": "Iconnikki-Vans-UGC-VID.mp4", "path": "Iconnikki-Vans-UGC-VID.mp4", "brand": "Vans", "creator": "Iconnikki", "styles": ["UGC"], "formats": [], "caption": "You saw it here first."}, {"type": "video", "filename": "JoesHughesShoes-UGC-Top5-ProductCloseUp-VID.MP4", "path": "JoesHughesShoes-UGC-Top5-ProductCloseUp-VID.MP4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Product Close-Up", "Top 5"], "caption": "The fit that made the feed."}, {"type": "video", "filename": "JoesHughesShoes-UGC-VID.mp4", "path": "JoesHughesShoes-UGC-VID.mp4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": [], "caption": "Colourways that hit different."}, {"type": "video", "filename": "JoesHughesShoes-ebay-UGC-SpeaktoCamera-WebsiteScreenshot-VID.MP4", "path": "JoesHughesShoes-ebay-UGC-SpeaktoCamera-WebsiteScreenshot-VID.MP4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Speak to Camera", "Platform Screenshot"], "caption": "Shop the full drop."}, {"type": "video", "filename": "NB-Studio-Model-Slideshow-TextOverlay-VID.mp4", "path": "NB-Studio-Model-Slideshow-TextOverlay-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Text Overlay", "Slideshow", "Model"], "caption": "Because you know quality."}, {"type": "video", "filename": "NB-Studio-Model-VID.mp4", "path": "NB-Studio-Model-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Model"], "caption": "Everyday icons, updated."}, {"type": "video", "filename": "NB-Studio-Slideshow-Whitespace-TextOverlay-VID.mp4", "path": "NB-Studio-Slideshow-Whitespace-TextOverlay-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Text Overlay", "Whitespace", "Slideshow"], "caption": "Keep it clean. Keep it JD."}, {"type": "video", "filename": "NB-UGC-ProductCloseUp-Styling-VID.mp4", "path": "NB-UGC-ProductCloseUp-Styling-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product Close-Up", "Styling"], "caption": "The only pair you'll need this week."}, {"type": "video", "filename": "NB-UGC-ProductInHand-VID.mp4", "path": "NB-UGC-ProductInHand-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product in Hand"], "caption": "Link in bio \u2014 wait, just tap."}, {"type": "video", "filename": "NB-UGC-ProductInHand2-VID.mp4", "path": "NB-UGC-ProductInHand2-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product in Hand"], "caption": "Our most-asked-about drop."}, {"type": "video", "filename": "NB-UGC-Unboxing-SplitScreen-VID.mp4", "path": "NB-UGC-Unboxing-SplitScreen-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Split Screen", "Unboxing"], "caption": "Throw it on. Walk out."}, {"type": "video", "filename": "StockX-POV-Multiproduct-Transtition-TextOverlay-VID.mp4", "path": "StockX-POV-Multiproduct-Transtition-TextOverlay-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Text Overlay", "Transitions", "POV"], "caption": "The vibe's been set."}, {"type": "video", "filename": "StockX-POV-OnFeet-MultiProduct-VID.mp4", "path": "StockX-POV-OnFeet-MultiProduct-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "On Feet", "POV"], "caption": "Made the list. Made the fit."}, {"type": "video", "filename": "StockX-UGC-Fits-Styling-Multiproduct-VID-2.mp4", "path": "StockX-UGC-Fits-Styling-Multiproduct-VID-2.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Styling", "Fits & Styling"], "caption": "Your rotation, upgraded."}, {"type": "video", "filename": "StockX-UGC-Fits-Styling-Multiproduct-VID.mp4", "path": "StockX-UGC-Fits-Styling-Multiproduct-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Styling", "Fits & Styling"], "caption": "Stepped on it. Approved."}, {"type": "video", "filename": "StockX-UGC-ProductHero-WebsiteScreenshot-VID.mp4", "path": "StockX-UGC-ProductHero-WebsiteScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Product Hero"], "caption": "The details do the talking."}, {"type": "video", "filename": "StockX-UGC-SpeakToCamera-WebScreenshot-VID.mp4", "path": "StockX-UGC-SpeakToCamera-WebScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Speak to Camera", "Website Screenshot"], "caption": "Wear it loud."}, {"type": "video", "filename": "StockX-UGC-Unboxing-WebsiteScreenshot-VID-2.mp4", "path": "StockX-UGC-Unboxing-WebsiteScreenshot-VID-2.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Unboxing"], "caption": "Back in stock \u2014 don't sleep."}, {"type": "video", "filename": "StockX-UGC-Unboxing-WebsiteScreenshot-VID.mp4", "path": "StockX-UGC-Unboxing-WebsiteScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Unboxing"], "caption": "The ones everyone's wearing."}, {"type": "video", "filename": "Vans-InterviewStyle-VID.mp4", "path": "Vans-InterviewStyle-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Unmatched. Understated. On foot."}, {"type": "video", "filename": "Vans-InterviewStyle2-VID.mp4", "path": "Vans-InterviewStyle2-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Quiet luxury, loud soles."}, {"type": "video", "filename": "Vans-InterviewStyle3-VID.mp4", "path": "Vans-InterviewStyle3-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Streetwear done right."}, {"type": "video", "filename": "Vans-InterviewStyle4-VID.mp4", "path": "Vans-InterviewStyle4-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "We don't chase trends. We set them."}, {"type": "image", "filename": "BrownsOnFeetPOV-IMG.jpg", "path": "BrownsOnFeetPOV-IMG.jpg", "brand": "Browns", "creator": null, "styles": [], "formats": ["On Feet", "POV"], "caption": "A small upgrade, a big flex."}, {"type": "image", "filename": "JoeHughesShoes-POV-IMG.webp", "path": "JoeHughesShoes-POV-IMG.webp", "brand": "Joe Hughes", "creator": null, "styles": [], "formats": ["POV"], "caption": "You already know."}, {"type": "carousel", "filename": "JoeHughes-CarouselStyle", "path": "JoeHughes-Carousel", "carousel_images": ["JoeHughes1.WEBP", "JoeHughes2.WEBP", "JoeHughes3.WEBP", "JoeHughes4.WEBP", "JoeHughes5.WEBP", "JoeHughes6.WEBP"], "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Carousel"], "caption": "The fit's coming together."}];
+window.ASSETS = [{"type": "video", "filename": "AprilLockhart-DM-UGC-SpeaktoCamera.mp4", "path": "AprilLockhart-DM-UGC-SpeaktoCamera.mp4", "brand": "Dr Martens", "creator": "April Lockhart", "styles": ["UGC"], "formats": ["Speak to Camera"], "caption": "The drop you've been watching.", "starred": false, "priority": null}, {"type": "video", "filename": "DM-UGC-OnFeet-Outdoor-VID.mp4", "path": "DM-UGC-OnFeet-Outdoor-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Outdoor", "On Feet"], "caption": "Made for the rotation.", "starred": false, "priority": null}, {"type": "video", "filename": "DM-UGC-Unboxing-Multiproduct-VID.mp4", "path": "DM-UGC-Unboxing-Multiproduct-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Unboxing"], "caption": "New in. Only at JD.", "starred": false, "priority": null}, {"type": "video", "filename": "DM-UGC-Unboxing-VID.mp4", "path": "DM-UGC-Unboxing-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Unboxing"], "caption": "Cop before they go.", "starred": false, "priority": null}, {"type": "video", "filename": "DM-UGC-Unboxing2-VID.mp4", "path": "DM-UGC-Unboxing2-VID.mp4", "brand": "Dr Martens", "creator": null, "styles": ["UGC"], "formats": ["Unboxing"], "caption": "Step out. Stand out.", "starred": false, "priority": null}, {"type": "video", "filename": "Footlocker-UGC-Model-VID.mp4", "path": "Footlocker-UGC-Model-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Model"], "caption": "The ones you'll actually wear.", "starred": false, "priority": null}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-Unboxing-VID.mp4", "path": "Footlocker-UGC-Multiproduct-Unboxing-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Unboxing"], "caption": "Unboxed and already sold out.", "starred": false, "priority": null}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-VID.mp4", "path": "Footlocker-UGC-Multiproduct-VID.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product"], "caption": "Your next go-to.", "starred": false, "priority": null}, {"type": "video", "filename": "Footlocker-UGC-Multiproduct-VID2.mp4", "path": "Footlocker-UGC-Multiproduct-VID2.mp4", "brand": "Foot Locker", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product"], "caption": "Built for every day, styled for every night.", "starred": false, "priority": null}, {"type": "video", "filename": "Iconnikki-Vans-UGC-VID.mp4", "path": "Iconnikki-Vans-UGC-VID.mp4", "brand": "Vans", "creator": "Iconnikki", "styles": ["UGC"], "formats": [], "caption": "You saw it here first.", "starred": false, "priority": null}, {"type": "video", "filename": "JoesHughesShoes-UGC-Top5-ProductCloseUp-VID.MP4", "path": "JoesHughesShoes-UGC-Top5-ProductCloseUp-VID.MP4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Product Close-Up", "Top 5"], "caption": "The fit that made the feed.", "starred": false, "priority": null}, {"type": "video", "filename": "JoesHughesShoes-UGC-VID.mp4", "path": "JoesHughesShoes-UGC-VID.mp4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": [], "caption": "Colourways that hit different.", "starred": false, "priority": null}, {"type": "video", "filename": "JoesHughesShoes-ebay-UGC-SpeaktoCamera-WebsiteScreenshot-VID.MP4", "path": "JoesHughesShoes-ebay-UGC-SpeaktoCamera-WebsiteScreenshot-VID.MP4", "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Speak to Camera", "Platform Screenshot"], "caption": "Shop the full drop.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-Studio-Model-Slideshow-TextOverlay-VID.mp4", "path": "NB-Studio-Model-Slideshow-TextOverlay-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Text Overlay", "Slideshow", "Model"], "caption": "Because you know quality.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-Studio-Model-VID.mp4", "path": "NB-Studio-Model-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Model"], "caption": "Everyday icons, updated.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-Studio-Slideshow-Whitespace-TextOverlay-VID.mp4", "path": "NB-Studio-Slideshow-Whitespace-TextOverlay-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["Studio"], "formats": ["Text Overlay", "Whitespace", "Slideshow"], "caption": "Keep it clean. Keep it JD.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-UGC-ProductCloseUp-Styling-VID.mp4", "path": "NB-UGC-ProductCloseUp-Styling-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product Close-Up", "Styling"], "caption": "The only pair you'll need this week.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-UGC-ProductInHand-VID.mp4", "path": "NB-UGC-ProductInHand-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product in Hand"], "caption": "Link in bio \u2014 wait, just tap.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-UGC-ProductInHand2-VID.mp4", "path": "NB-UGC-ProductInHand2-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Product in Hand"], "caption": "Our most-asked-about drop.", "starred": false, "priority": null}, {"type": "video", "filename": "NB-UGC-Unboxing-SplitScreen-VID.mp4", "path": "NB-UGC-Unboxing-SplitScreen-VID.mp4", "brand": "New Balance", "creator": null, "styles": ["UGC"], "formats": ["Split Screen", "Unboxing"], "caption": "Throw it on. Walk out.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-POV-Multiproduct-Transtition-TextOverlay-VID.mp4", "path": "StockX-POV-Multiproduct-Transtition-TextOverlay-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Text Overlay", "Transitions", "POV"], "caption": "The vibe's been set.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-POV-OnFeet-MultiProduct-VID.mp4", "path": "StockX-POV-OnFeet-MultiProduct-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "On Feet", "POV"], "caption": "Made the list. Made the fit.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-Fits-Styling-Multiproduct-VID-2.mp4", "path": "StockX-UGC-Fits-Styling-Multiproduct-VID-2.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Styling", "Fits & Styling"], "caption": "Your rotation, upgraded.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-Fits-Styling-Multiproduct-VID.mp4", "path": "StockX-UGC-Fits-Styling-Multiproduct-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Multi-Product", "Styling", "Fits & Styling"], "caption": "Stepped on it. Approved.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-ProductHero-WebsiteScreenshot-VID.mp4", "path": "StockX-UGC-ProductHero-WebsiteScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Product Hero"], "caption": "The details do the talking.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-SpeakToCamera-WebScreenshot-VID.mp4", "path": "StockX-UGC-SpeakToCamera-WebScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Speak to Camera", "Website Screenshot"], "caption": "Wear it loud.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-Unboxing-WebsiteScreenshot-VID-2.mp4", "path": "StockX-UGC-Unboxing-WebsiteScreenshot-VID-2.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Unboxing"], "caption": "Back in stock \u2014 don't sleep.", "starred": false, "priority": null}, {"type": "video", "filename": "StockX-UGC-Unboxing-WebsiteScreenshot-VID.mp4", "path": "StockX-UGC-Unboxing-WebsiteScreenshot-VID.mp4", "brand": "StockX", "creator": null, "styles": ["UGC"], "formats": ["Website Screenshot", "Unboxing"], "caption": "The ones everyone's wearing.", "starred": false, "priority": null}, {"type": "video", "filename": "Vans-InterviewStyle-VID.mp4", "path": "Vans-InterviewStyle-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Unmatched. Understated. On foot.", "starred": false, "priority": null}, {"type": "video", "filename": "Vans-InterviewStyle2-VID.mp4", "path": "Vans-InterviewStyle2-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Quiet luxury, loud soles.", "starred": false, "priority": null}, {"type": "video", "filename": "Vans-InterviewStyle3-VID.mp4", "path": "Vans-InterviewStyle3-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "Streetwear done right.", "starred": false, "priority": null}, {"type": "video", "filename": "Vans-InterviewStyle4-VID.mp4", "path": "Vans-InterviewStyle4-VID.mp4", "brand": "Vans", "creator": null, "styles": ["Interview"], "formats": ["Speak to Camera"], "caption": "We don't chase trends. We set them.", "starred": false, "priority": null}, {"type": "image", "filename": "BrownsOnFeetPOV-IMG.jpg", "path": "BrownsOnFeetPOV-IMG.jpg", "brand": "Browns", "creator": null, "styles": [], "formats": ["On Feet", "POV"], "caption": "A small upgrade, a big flex.", "starred": false, "priority": null}, {"type": "image", "filename": "JoeHughesShoes-POV-IMG.webp", "path": "JoeHughesShoes-POV-IMG.webp", "brand": "Joe Hughes", "creator": null, "styles": [], "formats": ["POV"], "caption": "You already know.", "starred": false, "priority": null}, {"type": "carousel", "filename": "JoeHughes-CarouselStyle", "path": "JoeHughes-Carousel", "carousel_images": ["JoeHughes1.WEBP", "JoeHughes2.WEBP", "JoeHughes3.WEBP", "JoeHughes4.WEBP", "JoeHughes5.WEBP", "JoeHughes6.WEBP"], "brand": "Joe Hughes", "creator": null, "styles": ["UGC"], "formats": ["Carousel"], "caption": "The fit's coming together.", "starred": false, "priority": null}];
 window.FILTERS = {"brands": ["Browns", "Dr Martens", "Foot Locker", "Joe Hughes", "New Balance", "StockX", "Vans"], "styles": ["Interview", "Studio", "UGC"], "formats": ["Carousel", "Fits & Styling", "Model", "Multi-Product", "On Feet", "Outdoor", "POV", "Platform Screenshot", "Product Close-Up", "Product Hero", "Product in Hand", "Slideshow", "Speak to Camera", "Split Screen", "Styling", "Text Overlay", "Top 5", "Transitions", "Unboxing", "Website Screenshot", "Whitespace"], "types": ["Video", "Image", "Carousel"]};
 </script>
 <script>
@@ -842,14 +982,75 @@ window.FILTERS = {"brands": ["Browns", "Dr Martens", "Foot Locker", "Joe Hughes"
 ================================================================ */
 const state = {
   activeFilters: { brands: new Set(), styles: new Set(), formats: new Set(), types: new Set() },
+  priorityFilters: { starred: false, high: false, medium: false, low: false },
   currentTab: 'grid',
 };
+
+/* ================================================================
+   USER PREFS (starred + priority) — localStorage
+================================================================ */
+const PREFS_KEY = 'jd_meta_ads_prefs_v1';
+
+function loadPrefs() {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (!raw) return {};
+    return JSON.parse(raw) || {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function savePrefs(prefs) {
+  try {
+    localStorage.setItem(PREFS_KEY, JSON.stringify(prefs));
+  } catch (e) { /* storage full or disabled */ }
+}
+
+function getAssetPrefs(filename) {
+  const all = loadPrefs();
+  return all[filename] || { starred: false, priority: null };
+}
+
+function setAssetStarred(filename, starred) {
+  const all = loadPrefs();
+  all[filename] = all[filename] || {};
+  all[filename].starred = starred;
+  savePrefs(all);
+}
+
+function setAssetPriority(filename, priority) {
+  const all = loadPrefs();
+  all[filename] = all[filename] || {};
+  all[filename].priority = priority;  // 'high' | 'medium' | 'low' | null
+  savePrefs(all);
+}
+
+function applyPrefsToAssets() {
+  const all = loadPrefs();
+  window.ASSETS.forEach(a => {
+    const p = all[a.filename] || {};
+    a.starred = !!p.starred;
+    a.priority = p.priority || null;
+  });
+}
 
 /* ================================================================
    HELPERS
 ================================================================ */
 function matches(asset) {
   const f = state.activeFilters;
+  const pf = state.priorityFilters;
+
+  // Priority filters
+  if (pf.starred && !asset.starred) return false;
+  const anyPriority = pf.high || pf.medium || pf.low;
+  if (anyPriority) {
+    const p = asset.priority;
+    if (!p) return false;
+    if (!pf[p]) return false;
+  }
+
   if (f.brands.size && !f.brands.has(asset.brand)) return false;
   if (f.styles.size) {
     if (!asset.styles.some(s => f.styles.has(s))) return false;
@@ -967,6 +1168,20 @@ function buildCard(asset, opts = {}) {
   const screen = document.createElement('div');
   screen.className = 'screen';
   screen.innerHTML = mediaHTML(asset) + chromeHTML(asset);
+
+  // Star button — over the screen, top-left
+  const starBtn = document.createElement('button');
+  starBtn.className = 'star-btn' + (asset.starred ? ' active' : '');
+  starBtn.setAttribute('aria-label', 'Star this ad');
+  starBtn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.3 16.5 14 18.3 21 12 17.3 5.7 21 7.5 14 2 9.3 9 9 12 2"/></svg>`;
+  starBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    asset.starred = !asset.starred;
+    setAssetStarred(asset.filename, asset.starred);
+    starBtn.classList.toggle('active', asset.starred);
+  });
+  screen.appendChild(starBtn);
+
   iphone.appendChild(screen);
   phoneWrap.appendChild(iphone);
   card.appendChild(phoneWrap);
@@ -979,11 +1194,37 @@ function buildCard(asset, opts = {}) {
     if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
     asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
     asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
+
     info.innerHTML = `
       <div class="card-filename">${escapeHTML(asset.filename)}</div>
       <div class="card-tags">${tags.join('')}</div>
+      <div class="priority-picker" data-filename="${escapeHTML(asset.filename)}">
+        <span class="priority-picker-label">Priority</span>
+        <button class="priority-btn high ${asset.priority === 'high' ? 'active' : ''}" data-priority="high">High</button>
+        <button class="priority-btn medium ${asset.priority === 'medium' ? 'active' : ''}" data-priority="medium">Med</button>
+        <button class="priority-btn low ${asset.priority === 'low' ? 'active' : ''}" data-priority="low">Low</button>
+        <button class="priority-btn clear ${!asset.priority ? 'active' : ''}" data-priority="">Clear</button>
+      </div>
     `;
     card.appendChild(info);
+
+    // Wire priority buttons
+    info.querySelectorAll('.priority-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const newPriority = btn.dataset.priority || null;
+        asset.priority = newPriority;
+        setAssetPriority(asset.filename, newPriority);
+        // Update button states
+        info.querySelectorAll('.priority-btn').forEach(b => {
+          const matches = (b.dataset.priority || null) === newPriority;
+          b.classList.toggle('active', matches);
+          if (b.classList.contains('clear')) {
+            b.classList.toggle('active', !newPriority);
+          }
+        });
+      });
+    });
   }
 
   // Carousel auto-advance
@@ -1170,6 +1411,20 @@ function renderReels() {
     chromeLayer.innerHTML = chromeHTML(asset);
     slot.appendChild(chromeLayer);
 
+    // Star button (per slot)
+    const starBtn = document.createElement('button');
+    starBtn.className = 'star-btn' + (asset.starred ? ' active' : '');
+    starBtn.setAttribute('aria-label', 'Star this ad');
+    starBtn.innerHTML = `<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.3 16.5 14 18.3 21 12 17.3 5.7 21 7.5 14 2 9.3 9 9 12 2"/></svg>`;
+    starBtn.style.zIndex = '60';
+    starBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      asset.starred = !asset.starred;
+      setAssetStarred(asset.filename, asset.starred);
+      starBtn.classList.toggle('active', asset.starred);
+    });
+    slot.appendChild(starBtn);
+
     innerStack.appendChild(slot);
 
     // Carousel auto-advance if applicable
@@ -1234,10 +1489,33 @@ function updateSideInfo(sideEl, asset) {
   if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
   asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
   asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
+
+  const priorityBadge = asset.priority
+    ? `<span class="priority-badge ${asset.priority}" style="margin-bottom:12px;display:inline-block;">${asset.priority}</span>`
+    : '';
+
   sideEl.innerHTML = `
+    ${priorityBadge}
     <div class="filename">${escapeHTML(asset.filename)}</div>
     <div class="tags">${tags.join('')}</div>
+    <div class="priority-picker" data-filename="${escapeHTML(asset.filename)}" style="margin-top:14px;flex-wrap:wrap;">
+      <span class="priority-picker-label">Priority</span>
+      <button class="priority-btn high ${asset.priority === 'high' ? 'active' : ''}" data-priority="high">High</button>
+      <button class="priority-btn medium ${asset.priority === 'medium' ? 'active' : ''}" data-priority="medium">Med</button>
+      <button class="priority-btn low ${asset.priority === 'low' ? 'active' : ''}" data-priority="low">Low</button>
+      <button class="priority-btn clear ${!asset.priority ? 'active' : ''}" data-priority="">Clear</button>
+    </div>
   `;
+  // Wire priority buttons
+  sideEl.querySelectorAll('.priority-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const newPriority = btn.dataset.priority || null;
+      asset.priority = newPriority;
+      setAssetPriority(asset.filename, newPriority);
+      updateSideInfo(sideEl, asset);
+    });
+  });
 }
 
 function updateReelsUI() {
@@ -1383,8 +1661,26 @@ function renderChips(id, items, bucket) {
 ================================================================ */
 function clearFilters() {
   Object.keys(state.activeFilters).forEach(k => state.activeFilters[k].clear());
+  Object.keys(state.priorityFilters).forEach(k => state.priorityFilters[k] = false);
   document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
   rerender();
+}
+
+function wirePriorityFilters() {
+  document.querySelectorAll('#filter-priority .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const filter = chip.dataset.filter;
+      let key;
+      if (filter === 'starred') key = 'starred';
+      else if (filter === 'priority-high') key = 'high';
+      else if (filter === 'priority-medium') key = 'medium';
+      else if (filter === 'priority-low') key = 'low';
+      if (!key) return;
+      state.priorityFilters[key] = !state.priorityFilters[key];
+      chip.classList.toggle('active', state.priorityFilters[key]);
+      rerender();
+    });
+  });
 }
 
 function rerender() {
@@ -1413,21 +1709,218 @@ function setTab(tab) {
 }
 
 /* ================================================================
+   GITHUB API AUTO-DISCOVERY — find new videos uploaded to the repo
+   and merge them into the displayed library without any code edits.
+
+   Detects repo from window.location — works when hosted on *.github.io
+================================================================ */
+function detectGitHubRepo() {
+  // URL pattern for GitHub Pages: https://USER.github.io/REPO/
+  const host = window.location.hostname;
+  const path = window.location.pathname;
+  const m = host.match(/^([^.]+)\.github\.io$/);
+  if (!m) return null;
+  const owner = m[1];
+  // First path segment = repo name
+  const repo = path.split('/').filter(Boolean)[0];
+  if (!repo) return null;
+  return { owner, repo };
+}
+
+async function tryAutoDiscoverNewVideos() {
+  const repo = detectGitHubRepo();
+  if (!repo) return; // not hosted on GitHub Pages — skip
+
+  const apiURL = `https://api.github.com/repos/${repo.owner}/${repo.repo}/contents/`;
+  let files;
+  try {
+    const res = await fetch(apiURL);
+    if (!res.ok) return; // rate-limited or repo private — silently skip
+    files = await res.json();
+  } catch (e) {
+    return; // network error — skip
+  }
+  if (!Array.isArray(files)) return;
+
+  // Known extensions we care about
+  const videoExts = ['.mp4'];
+  const imageExts = ['.jpg', '.jpeg', '.png', '.webp'];
+
+  const knownFiles = new Set(window.ASSETS.map(a => a.filename.toLowerCase()));
+  const newAssets = [];
+
+  files.forEach(f => {
+    if (f.type !== 'file') return;
+    const name = f.name;
+    const lower = name.toLowerCase();
+    const isVideo = videoExts.some(e => lower.endsWith(e));
+    const isImage = imageExts.some(e => lower.endsWith(e));
+    if (!isVideo && !isImage) return;
+    // Exclude the logo and any HTML/MD/JSON/JS support files
+    if (name === 'jd-logo.png') return;
+    // Skip carousel constituent images (Joe Hughes* WEBPs) — these are already in the catalogue as a carousel
+    if (/^JoeHughes\d+\.WEBP$/i.test(name)) return;
+    // Skip if already in catalogue
+    if (knownFiles.has(lower)) return;
+    newAssets.push({
+      type: isVideo ? 'video' : 'image',
+      filename: name,
+      path: name,
+      ...parseTagsFromFilename(name),
+      caption: 'New in. Only at JD.',
+      starred: false,
+      priority: null,
+    });
+  });
+
+  if (newAssets.length === 0) return;
+
+  // Apply any saved prefs for these new assets
+  const prefs = loadPrefs();
+  newAssets.forEach(a => {
+    const p = prefs[a.filename] || {};
+    a.starred = !!p.starred;
+    a.priority = p.priority || null;
+  });
+
+  // Merge
+  window.ASSETS.push(...newAssets);
+
+  // Also extend FILTERS with any new brands/styles/formats
+  const allBrands = new Set(window.FILTERS.brands);
+  const allStyles = new Set(window.FILTERS.styles);
+  const allFormats = new Set(window.FILTERS.formats);
+  newAssets.forEach(a => {
+    if (a.brand) allBrands.add(a.brand);
+    a.styles.forEach(s => allStyles.add(s));
+    a.formats.forEach(f => allFormats.add(f));
+  });
+  window.FILTERS.brands = [...allBrands].sort();
+  window.FILTERS.styles = [...allStyles].sort();
+  window.FILTERS.formats = [...allFormats].sort();
+
+  // Re-render filter chips and the current view
+  renderChips('filter-brands', window.FILTERS.brands, 'brands');
+  renderChips('filter-styles', window.FILTERS.styles, 'styles');
+  renderChips('filter-formats', window.FILTERS.formats, 'formats');
+  renderChips('filter-types', window.FILTERS.types, 'types');
+
+  // Update counts
+  const videoCount = window.ASSETS.filter(a => a.type === 'video').length;
+  const imageCount = window.ASSETS.filter(a => a.type === 'image' || a.type === 'carousel').length;
+  document.getElementById('count-videos').textContent = videoCount;
+  document.getElementById('count-images').textContent = imageCount;
+  document.getElementById('count-total').textContent = window.ASSETS.length;
+
+  rerender();
+
+  // Toast to confirm
+  showToast(`Auto-discovered ${newAssets.length} new asset${newAssets.length === 1 ? '' : 's'}`);
+}
+
+/* Parse tags from a filename using the same logic as the build script */
+function parseTagsFromFilename(fn) {
+  const PRODUCT_BRANDS = {
+    'Footlocker': 'Foot Locker',
+    'StockX': 'StockX',
+    'Vans': 'Vans',
+    'Browns': 'Browns',
+    'JoesHughesShoes': 'Joe Hughes',
+    'JoeHughes': 'Joe Hughes',
+    'NB': 'New Balance',
+    'DM': 'Dr Martens',
+  };
+  const CREATOR_BRANDS = {
+    'AprilLockhart': 'April Lockhart',
+    'Iconnikki': 'Iconnikki',
+  };
+  const STYLE_KEYWORDS = {
+    'UGC': 'UGC', 'Studio': 'Studio', 'InterviewStyle': 'Interview', 'Interview': 'Interview',
+  };
+  const FORMAT_KEYWORDS = {
+    'Unboxing': 'Unboxing', 'SpeaktoCamera': 'Speak to Camera', 'SpeakToCamera': 'Speak to Camera',
+    'OnFeet': 'On Feet', 'POV': 'POV', 'ProductCloseUp': 'Product Close-Up',
+    'ProductInHand': 'Product in Hand', 'ProductHero': 'Product Hero',
+    'Multiproduct': 'Multi-Product', 'MultiProduct': 'Multi-Product',
+    'Slideshow': 'Slideshow', 'CarouselStyle': 'Carousel',
+    'WebsiteScreenshot': 'Website Screenshot', 'WebScreenshot': 'Website Screenshot',
+    'SplitScreen': 'Split Screen', 'TextOverlay': 'Text Overlay',
+    'Styling': 'Styling', 'Fits': 'Fits & Styling', 'Whitespace': 'Whitespace',
+    'Transtition': 'Transitions', 'Transition': 'Transitions',
+    'Top5': 'Top 5', 'Outdoor': 'Outdoor', 'Model': 'Model', 'ebay': 'Platform Screenshot',
+  };
+
+  let brand = null;
+  const productKeys = Object.keys(PRODUCT_BRANDS).sort((a,b) => b.length - a.length);
+  for (const k of productKeys) {
+    if (fn.includes(k)) { brand = PRODUCT_BRANDS[k]; break; }
+  }
+  if (!brand) {
+    const creatorKeys = Object.keys(CREATOR_BRANDS).sort((a,b) => b.length - a.length);
+    for (const k of creatorKeys) {
+      if (fn.includes(k)) { brand = CREATOR_BRANDS[k]; break; }
+    }
+  }
+  // DM edge case
+  const parts = fn.split('-');
+  if (parts.includes('DM') || fn.startsWith('DM-') || fn.includes('-DM-')) brand = 'Dr Martens';
+
+  const styles = [];
+  for (const [k, v] of Object.entries(STYLE_KEYWORDS)) {
+    if (fn.includes(k) && !styles.includes(v)) styles.push(v);
+  }
+  const formats = [];
+  let fnMasked = fn;
+  const fmtKeys = Object.keys(FORMAT_KEYWORDS).sort((a,b) => b.length - a.length);
+  for (const k of fmtKeys) {
+    if (fnMasked.includes(k)) {
+      const v = FORMAT_KEYWORDS[k];
+      if (!formats.includes(v)) formats.push(v);
+      fnMasked = fnMasked.split(k).join('_'.repeat(k.length));
+    }
+  }
+  // Post-process: Vans Interview → Speak to Camera; StockX POV → UGC
+  if (fn.includes('InterviewStyle') && !formats.includes('Speak to Camera')) formats.push('Speak to Camera');
+  if (fn.includes('StockX-POV') && styles.length === 0) styles.push('UGC');
+
+  return { brand, creator: null, styles, formats };
+}
+
+/* Small toast notification for background events */
+function showToast(text) {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: var(--yellow); color: #000; padding: 12px 20px; border-radius: 6px;
+    font-family: var(--font-display); font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.1em; font-size: 12px; z-index: 100;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    animation: toastIn 0.3s ease-out;
+  `;
+  toast.textContent = text;
+  document.body.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.4s'; }, 3500);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+/* ================================================================
    INIT
 ================================================================ */
 function init() {
-  // Guard — if _data.js / data.js failed to load, show a clear error instead of silent 0s
+  // Guard — if data failed to load, show a clear error instead of silent 0s
   if (typeof window.ASSETS === 'undefined' || typeof window.FILTERS === 'undefined') {
     const msg = document.createElement('div');
     msg.style.cssText = 'padding:60px 40px;text-align:center;color:#FFE000;font-family:Barlow,sans-serif;';
     msg.innerHTML = `
-      <h2 style="font-family:Barlow Condensed;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;">Data file not loaded</h2>
-      <p style="color:#fff;margin-bottom:12px;">The library's asset catalogue (<code style="background:#222;padding:2px 6px;border-radius:3px;">data.js</code>) didn't load.</p>
-      <p style="color:#888;font-size:14px;">Check that <code style="background:#222;padding:2px 6px;border-radius:3px;">data.js</code> is in the same folder as <code style="background:#222;padding:2px 6px;border-radius:3px;">index.html</code>.</p>
+      <h2 style="font-family:Barlow Condensed;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px;">Data not loaded</h2>
+      <p style="color:#fff;margin-bottom:12px;">The library's asset catalogue didn't load.</p>
     `;
     document.getElementById('grid-container').appendChild(msg);
     return;
   }
+
+  // Apply saved starred/priority from localStorage onto the asset records
+  applyPrefsToAssets();
 
   // Counts
   const videoCount = window.ASSETS.filter(a => a.type === 'video').length;
@@ -1441,12 +1934,29 @@ function init() {
   renderChips('filter-formats', window.FILTERS.formats, 'formats');
   renderChips('filter-types', window.FILTERS.types, 'types');
 
+  wirePriorityFilters();
+
   document.querySelectorAll('.tab-btn').forEach(b => {
     b.addEventListener('click', () => setTab(b.dataset.tab));
   });
   document.getElementById('clear-btn').addEventListener('click', clearFilters);
 
+  // Reset My Priorities button — clears all localStorage prefs
+  const resetBtn = document.getElementById('reset-priorities-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      if (confirm('Clear all your starred and priority settings? This only affects your browser.')) {
+        localStorage.removeItem(PREFS_KEY);
+        window.ASSETS.forEach(a => { a.starred = false; a.priority = null; });
+        rerender();
+      }
+    });
+  }
+
   renderGrid();
+
+  // Kick off GitHub API auto-discovery in the background — non-blocking
+  tryAutoDiscoverNewVideos();
 }
 
 document.addEventListener('DOMContentLoaded', init);
