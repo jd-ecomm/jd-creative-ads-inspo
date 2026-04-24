@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JD Ads — Playback Diagnostic</title>
+<style>
+  body { background: #000; color: #fff; font-family: sans-serif; padding: 40px; text-align: center; }
+  h1 { color: #FFE000; margin-bottom: 20px; }
+  .test { margin: 30px auto; max-width: 400px; padding: 20px; border: 1px solid #333; border-radius: 8px; }
+  .status { margin-top: 12px; padding: 8px; border-radius: 4px; font-weight: 700; }
+  .ok { background: #0a3; }
+  .fail { background: #a30; }
+  .pending { background: #555; }
+  video { width: 100%; border-radius: 6px; background: #222; }
+  code { background: #222; padding: 2px 6px; border-radius: 3px; color: #FFE000; }
+  pre { text-align: left; background: #111; padding: 10px; border-radius: 6px; overflow-x: auto; font-size: 12px; }
+</style>
+</head>
+<body>
+
+<h1>Playback Diagnostic</h1>
+<p>If the video below plays automatically, everything is working. If it shows a play button, click it — the main library also has tap-to-play as a fallback.</p>
+
+<div class="test">
+  <video id="v" src="videos/StockX-UGC-ProductHero-WebsiteScreenshot-VID.mp4" autoplay muted loop playsinline controls></video>
+  <div id="status" class="status pending">Testing…</div>
+</div>
+
+<div class="test" style="text-align:left;">
+  <strong style="color:#FFE000;">Diagnostic info:</strong>
+  <pre id="info"></pre>
+</div>
+
+<p>Back to the <a href="index.html" style="color:#FFE000;">main library</a>.</p>
+
+<script>
+  const v = document.getElementById('v');
+  const status = document.getElementById('status');
+  const info = document.getElementById('info');
+
+  const details = {
+    protocol: window.location.protocol,
+    userAgent: navigator.userAgent.split(' ').slice(-3).join(' '),
+    videoSupport: {
+      mp4: v.canPlayType('video/mp4'),
+    },
+    videoReadyState: v.readyState,
+  };
+
+  v.addEventListener('loadeddata', () => {
+    details.videoReadyState = v.readyState;
+    info.textContent = JSON.stringify(details, null, 2);
+  });
+
+  v.addEventListener('playing', () => {
+    status.className = 'status ok';
+    status.textContent = '✓ Video is playing — all systems go';
+  });
+
+  v.addEventListener('error', () => {
+    status.className = 'status fail';
+    status.textContent = '✗ Video failed to load — check the /videos folder exists next to this HTML file';
+  });
+
+  // Check after 3s whether autoplay worked
+  setTimeout(() => {
+    if (v.paused) {
+      status.className = 'status fail';
+      status.textContent = '✗ Autoplay was blocked by the browser — click the play button on the video. The main library has tap-to-play fallback.';
+    }
+  }, 3000);
+
+  info.textContent = JSON.stringify(details, null, 2);
+</script>
+
+</body>
+</html>

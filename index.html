@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JD Sports Canada — Meta Ads Creative Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #000000;
+    --bg-elev: #0a0a0a;
+    --bg-card: #111111;
+    --bg-card-hover: #161616;
+    --yellow: #FFE000;
+    --yellow-dim: rgba(255, 224, 0, 0.15);
+    --border: #1f1f1f;
+    --border-strong: #2a2a2a;
+    --text: #ffffff;
+    --text-muted: #888888;
+    --text-dim: #555555;
+    --font-display: 'Barlow Condensed', sans-serif;
+    --font-body: 'Barlow', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--text); font-family: var(--font-body); min-height: 100vh; }
+  body { line-height: 1.4; overflow-x: hidden; }
+
+  /* ========= HEADER ========= */
+  .top-header {
+    padding: 28px 40px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    position: sticky;
+    top: 0;
+    background: rgba(0,0,0,0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 50;
+  }
+  .brand-row { display: flex; align-items: center; gap: 16px; }
+  .brand-logo {
+    width: 48px; height: 48px;
+    background: var(--yellow);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 5px;
+  }
+  .brand-logo img { width: 100%; height: 100%; object-fit: contain; filter: invert(1); }
+  .brand-meta { display: flex; flex-direction: column; line-height: 1.1; }
+  .brand-meta .eyebrow {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: var(--yellow);
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .brand-meta h1 {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 4px;
+  }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 12px;
+    padding: 10px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .tab-btn.active {
+    background: var(--yellow);
+    color: #000;
+  }
+  .tab-btn:not(.active):hover {
+    color: var(--text);
+  }
+
+  .header-counts {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    font-family: var(--font-display);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+  }
+  .count-pill {
+    padding: 6px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-muted);
+  }
+  .count-pill strong { color: var(--yellow); font-weight: 700; margin-right: 4px; }
+
+  /* ========= FILTERS ========= */
+  .filter-bar {
+    padding: 20px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-elev);
+  }
+  .filter-group {
+    margin-bottom: 14px;
+  }
+  .filter-group:last-child { margin-bottom: 0; }
+  .filter-group-label {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 100px;
+    font-weight: 600;
+    border: 1px solid var(--border-strong);
+    background: var(--bg-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+  .chip:hover { color: var(--text); border-color: #444; }
+  .chip.active {
+    background: var(--yellow);
+    border-color: var(--yellow);
+    color: #000;
+  }
+  .chip.active.clear {
+    background: transparent;
+    color: var(--yellow);
+  }
+  .filter-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .result-count { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; color: var(--text-muted); }
+  .result-count strong { color: var(--yellow); font-size: 14px; }
+  .clear-btn {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 11px;
+    padding: 8px 14px;
+    border-radius: 4px;
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-weight: 600;
+  }
+  .clear-btn:hover { color: var(--text); border-color: var(--yellow); }
+
+  /* ========= GRID VIEW ========= */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  #grid-view {
+    padding: 32px 40px 80px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 36px;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .card-phone-wrap {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* ========= iPHONE FRAME ========= */
+  .iphone {
+    position: relative;
+    width: 280px;
+    height: 580px;
+    background: #1a1a1a;
+    border-radius: 40px;
+    padding: 7px;
+    box-shadow:
+      inset 0 0 0 2px #2a2a2a,
+      0 0 0 2px #000,
+      0 20px 40px rgba(0,0,0,0.6);
+  }
+  .iphone::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88px;
+    height: 24px;
+    background: #000;
+    border-radius: 14px;
+    z-index: 10;
+  }
+  .iphone::after {
+    content: '';
+    position: absolute;
+    right: -2px;
+    top: 120px;
+    width: 3px;
+    height: 50px;
+    background: #2a2a2a;
+    border-radius: 0 2px 2px 0;
+  }
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 34px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .media-el {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #000;
+    display: block;
+  }
+
+  /* ========= IG CHROME ========= */
+  .status-bar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 40px;
+    padding: 12px 26px 0 26px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 6;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+  }
+  .status-bar .icons { display: flex; align-items: center; gap: 4px; }
+  .status-bar .icons svg { width: 13px; height: 13px; fill: #fff; }
+  .status-bar .battery {
+    width: 22px; height: 10px;
+    border: 1px solid rgba(255,255,255,0.85);
+    border-radius: 3px;
+    position: relative;
+    padding: 1px;
+  }
+  .status-bar .battery::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: 3px;
+    width: 2px; height: 4px;
+    background: rgba(255,255,255,0.85);
+    border-radius: 0 1px 1px 0;
+  }
+  .status-bar .battery-fill { width: 70%; height: 100%; background: #fff; border-radius: 1px; }
+
+  .ig-top {
+    position: absolute;
+    top: 40px; left: 0; right: 0;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 5;
+    pointer-events: none;
+  }
+  .ig-top .reels-label {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+  }
+  .ig-top .cam-btn svg {
+    width: 22px; height: 22px;
+    stroke: #fff; stroke-width: 1.8; fill: none;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+  }
+
+  .ig-right {
+    position: absolute;
+    right: 8px;
+    bottom: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    z-index: 5;
+  }
+  .ig-right .icon-btn {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    color: #fff; font-size: 10px; font-weight: 600;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+  }
+  .ig-right svg {
+    width: 24px; height: 24px;
+    fill: none; stroke: #fff; stroke-width: 2;
+    filter: drop-shadow(0 1px 3px rgba(0,0,0,0.6));
+  }
+  .ig-right .filled { fill: #fff; stroke: none; }
+  .ig-right .brand-thumb {
+    width: 26px; height: 26px;
+    border-radius: 5px;
+    background: var(--yellow);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    padding: 3px;
+    overflow: hidden;
+  }
+  .ig-right .brand-thumb img { width: 100%; height: 100%; object-fit: contain; }
+
+  .ig-bottom {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    padding: 10px 14px 12px;
+    z-index: 5;
+    background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, rgba(0,0,0,0.25) 60%, transparent 100%);
+  }
+  .ig-profile {
+    display: flex; align-items: center; gap: 7px;
+    margin-bottom: 6px;
+  }
+  .ig-avatar {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #000;
+    border: 1.5px solid #fff;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 3px;
+  }
+  .ig-avatar img { width: 100%; height: 100%; object-fit: contain; }
+  .ig-id { display: flex; flex-direction: column; line-height: 1.15; }
+  .ig-handle { font-weight: 700; font-size: 12px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
+  .ig-sponsored {
+    font-size: 10px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+  }
+  .ig-follow {
+    margin-left: 4px;
+    border: 1px solid rgba(255,255,255,0.85);
+    color: #fff;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 5px;
+  }
+  .ig-caption {
+    font-size: 11px;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 8px;
+    max-width: 220px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+  }
+  .ig-shop-btn {
+    display: block;
+    width: calc(100% - 50px);
+    background: rgba(60,60,60,0.65);
+    backdrop-filter: blur(16px) saturate(1.5);
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 9px 0;
+    border-radius: 7px;
+    text-align: center;
+  }
+
+  /* Carousel dots */
+  .carousel-dots {
+    position: absolute;
+    top: 72px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 4px;
+    z-index: 5;
+  }
+  .carousel-dots .dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.45);
+    transition: background 0.2s ease;
+  }
+  .carousel-dots .dot.active { background: #fff; }
+
+  /* ========= CARD INFO ========= */
+  .card-info {
+    padding: 0 4px;
+  }
+  .card-filename {
+    font-size: 11px;
+    color: var(--text-dim);
+    font-family: monospace;
+    margin-bottom: 8px;
+    word-break: break-all;
+    line-height: 1.3;
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+  .tag-chip {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .tag-chip.brand { background: var(--yellow); color: #000; }
+  .tag-chip.style { border: 1px solid var(--yellow); color: var(--yellow); }
+  .tag-chip.format { border: 1px solid var(--border-strong); color: var(--text-muted); }
+
+  /* ========= REELS VIEW ========= */
+  #reels-view {
+    height: calc(100vh - 170px);
+    overflow-y: scroll;
+    scroll-snap-type: y mandatory;
+    scrollbar-width: none;
+  }
+  #reels-view::-webkit-scrollbar { display: none; }
+
+  .reel-slide {
+    height: calc(100vh - 170px);
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 20px;
+  }
+  .reel-slide .iphone {
+    width: 340px;
+    height: min(700px, calc(100vh - 220px));
+  }
+  .reel-slide .iphone::before { width: 100px; height: 26px; top: 14px; }
+  .reel-slide .iphone::after { top: 140px; height: 60px; }
+  .reel-slide .screen { border-radius: 36px; }
+  .reel-slide .iphone { border-radius: 44px; }
+
+  .reel-side-info {
+    position: absolute;
+    left: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 260px;
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .reel-side-info { display: block; }
+  }
+  .reel-side-info .filename {
+    font-family: monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-bottom: 14px;
+    word-break: break-all;
+    line-height: 1.4;
+  }
+  .reel-side-info .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+
+  .reel-counter {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-display);
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    writing-mode: vertical-rl;
+    transform: translateY(-50%) rotate(180deg);
+    display: none;
+  }
+  @media (min-width: 1100px) {
+    .reel-counter { display: block; }
+  }
+  .reel-counter .current { color: var(--yellow); font-weight: 700; }
+
+  .reel-nav-hint {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-display);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 20;
+  }
+  .reel-nav-hint .arrow {
+    display: inline-block;
+    animation: bounce 1.6s ease-in-out infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+
+  /* Empty state */
+  .empty {
+    padding: 80px 40px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+  .empty h3 {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: 18px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+
+  /* ========= FOOTER ========= */
+  footer {
+    padding: 24px 40px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 11px;
+    font-family: var(--font-display);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+  footer strong { color: var(--yellow); }
+
+  /* ========= RESPONSIVE ========= */
+  @media (max-width: 720px) {
+    .top-header { padding: 20px 20px 14px; }
+    .filter-bar { padding: 16px 20px; }
+    #grid-view { padding: 24px 20px 60px; }
+    .grid { grid-template-columns: 1fr; gap: 32px; }
+    .iphone { width: 260px; height: 540px; }
+    .reel-slide .iphone { width: 280px; height: 580px; }
+    .reel-slide .iphone::before { width: 88px; height: 24px; }
+  }
+
+  /* Video is muted by default but we render a "Tap to unmute" hint */
+  .unmute-hint {
+    position: absolute;
+    bottom: 140px;
+    right: 8px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(8px);
+    border-radius: 100px;
+    padding: 5px 9px;
+    font-size: 10px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    z-index: 6;
+    cursor: pointer;
+    opacity: 0.85;
+    font-weight: 600;
+  }
+  .unmute-hint svg { width: 12px; height: 12px; fill: #fff; }
+  .unmute-hint.unmuted { background: rgba(255, 224, 0, 0.9); color: #000; }
+  .unmute-hint.unmuted svg { fill: #000; }
+
+  /* Tap-to-play overlay (shown when autoplay is blocked) */
+  .tap-to-play {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 7;
+    background: rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  .tap-to-play.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .tap-to-play::before {
+    content: '';
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: rgba(255, 224, 0, 0.95);
+    display: block;
+  }
+  .tap-to-play::after {
+    content: '';
+    position: absolute;
+    width: 0; height: 0;
+    border-left: 20px solid #000;
+    border-top: 13px solid transparent;
+    border-bottom: 13px solid transparent;
+    margin-left: 4px;
+  }
+
+  /* Progress bar at top for video */
+  .progress-bar {
+    position: absolute;
+    top: 38px;
+    left: 12px;
+    right: 12px;
+    height: 2px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 1px;
+    z-index: 4;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #fff;
+    transition: width 0.1s linear;
+  }
+</style>
+</head>
+<body>
+
+<header class="top-header">
+  <div class="brand-row">
+    <div class="brand-logo"><img src="assets/jd-logo.png" alt="JD" /></div>
+    <div class="brand-meta">
+      <span class="eyebrow">JD Sports Canada</span>
+      <h1>Meta Ads — Creative Reference</h1>
+    </div>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab-btn active" data-tab="grid" role="tab">Grid Gallery</button>
+    <button class="tab-btn" data-tab="reels" role="tab">Reels Experience</button>
+  </div>
+  <div class="header-counts">
+    <div class="count-pill"><strong id="count-videos">0</strong> Videos</div>
+    <div class="count-pill"><strong id="count-images">0</strong> Images</div>
+    <div class="count-pill"><strong id="count-total">0</strong> Assets</div>
+  </div>
+</header>
+
+<div class="filter-bar">
+  <div class="filter-group">
+    <div class="filter-group-label">Brand / Inspiration Source</div>
+    <div class="filter-chips" id="filter-brands"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-group-label">Style</div>
+    <div class="filter-chips" id="filter-styles"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-group-label">Format</div>
+    <div class="filter-chips" id="filter-formats"></div>
+  </div>
+  <div class="filter-group">
+    <div class="filter-group-label">Type</div>
+    <div class="filter-chips" id="filter-types"></div>
+  </div>
+  <div class="filter-actions">
+    <div class="result-count"><strong id="result-count">0</strong> assets showing</div>
+    <button class="clear-btn" id="clear-btn">Clear All Filters</button>
+  </div>
+</div>
+
+<!-- GRID VIEW -->
+<main id="grid-view" class="view active">
+  <div class="grid" id="grid-container"></div>
+  <div class="empty" id="grid-empty" style="display:none;">
+    <h3>No matches</h3>
+    <p>Try removing some filters.</p>
+  </div>
+</main>
+
+<!-- REELS VIEW -->
+<main id="reels-view" class="view">
+  <!-- populated on tab switch -->
+</main>
+
+<footer>
+  <strong>JD Sports Canada</strong> · Creative Reference Library · Built for the creative team
+</footer>
+
+<script src="_data.js"></script>
+<script>
+/* ================================================================
+   STATE
+================================================================ */
+const state = {
+  activeFilters: { brands: new Set(), styles: new Set(), formats: new Set(), types: new Set() },
+  currentTab: 'grid',
+};
+
+/* ================================================================
+   HELPERS
+================================================================ */
+function matches(asset) {
+  const f = state.activeFilters;
+  if (f.brands.size && !f.brands.has(asset.brand)) return false;
+  if (f.styles.size) {
+    if (!asset.styles.some(s => f.styles.has(s))) return false;
+  }
+  if (f.formats.size) {
+    if (!asset.formats.some(x => f.formats.has(x))) return false;
+  }
+  if (f.types.size) {
+    const t = asset.type === 'carousel' ? 'Carousel' : (asset.type === 'video' ? 'Video' : 'Image');
+    if (!f.types.has(t)) return false;
+  }
+  return true;
+}
+
+function filteredAssets() {
+  return window.ASSETS.filter(matches);
+}
+
+/* ================================================================
+   IG CHROME (reusable HTML template)
+================================================================ */
+function chromeHTML(asset) {
+  const caption = asset.caption || '';
+  return `
+    <div class="status-bar">
+      <div class="time">9:41</div>
+      <div class="icons">
+        <svg viewBox="0 0 18 12"><rect x="0" y="8" width="3" height="4" rx="0.5"/><rect x="4" y="6" width="3" height="6" rx="0.5"/><rect x="8" y="3" width="3" height="9" rx="0.5"/><rect x="12" y="0" width="3" height="12" rx="0.5"/></svg>
+        <svg viewBox="0 0 16 12"><path d="M8 11a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm0-5.5c1.5 0 2.9.6 4 1.6l1.4-1.4C11.9 4.2 10 3.5 8 3.5s-3.9.7-5.4 2.2L4 7.1C5.1 6.1 6.5 5.5 8 5.5zm0-4c2.5 0 4.8 1 6.6 2.6L16 2.7C13.9.8 11 0 8 0S2.1.8 0 2.7l1.4 1.4C3.2 2.5 5.5 1.5 8 1.5z"/></svg>
+        <div class="battery"><div class="battery-fill"></div></div>
+      </div>
+    </div>
+    <div class="ig-top">
+      <div class="reels-label">Reels</div>
+      <div class="cam-btn">
+        <svg viewBox="0 0 24 24"><path d="M4 7h3l2-3h6l2 3h3v13H4V7z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      </div>
+    </div>
+    <div class="ig-right">
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><path d="M20.8 4.6c-2.2-2-5.7-2-7.8.3L12 6l-1-1c-2.1-2.3-5.6-2.3-7.8-.3-2.4 2.2-2.5 6-.4 8.3L12 21l9.2-8c2.1-2.3 2-6-.4-8.4z"/></svg>
+        <span>2.1K</span>
+      </div>
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><path d="M21 12c0 4.4-4 8-9 8-1.3 0-2.5-.2-3.6-.7L3 21l1.8-5C3.7 14.8 3 13.5 3 12c0-4.4 4-8 9-8s9 3.6 9 8z"/></svg>
+        <span>148</span>
+      </div>
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        <span>Share</span>
+      </div>
+      <div class="icon-btn">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" class="filled"/><circle cx="6" cy="12" r="1.5" class="filled"/><circle cx="18" cy="12" r="1.5" class="filled"/></svg>
+      </div>
+      <div class="brand-thumb"><img src="assets/jd-logo.png" alt="JD" /></div>
+    </div>
+    <div class="ig-bottom">
+      <div class="ig-profile">
+        <div class="ig-avatar"><img src="assets/jd-logo.png" alt="JD" /></div>
+        <div class="ig-id">
+          <div class="ig-handle">jdsportscanada</div>
+          <div class="ig-sponsored">Sponsored</div>
+        </div>
+        <button class="ig-follow">Follow</button>
+      </div>
+      <div class="ig-caption">${escapeHTML(caption)}</div>
+      <button class="ig-shop-btn">Shop Now</button>
+    </div>
+  `;
+}
+
+function escapeHTML(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+}
+
+/* ================================================================
+   MEDIA ELEMENT (lazy autoplay via IntersectionObserver)
+================================================================ */
+function mediaHTML(asset, idAttr = '') {
+  if (asset.type === 'video') {
+    // Set src immediately so the video loads; IntersectionObserver controls play/pause only.
+    // Tap-to-play overlay shows if autoplay is blocked; click hides it and plays.
+    return `<video class="media-el" ${idAttr} muted loop playsinline preload="auto" src="${asset.path}"></video>
+            <div class="tap-to-play" data-play-overlay></div>`;
+  }
+  if (asset.type === 'image') {
+    return `<img class="media-el" ${idAttr} src="${asset.path}" alt="${escapeHTML(asset.filename)}" />`;
+  }
+  if (asset.type === 'carousel') {
+    const imgs = asset.carousel_images.map((src, i) =>
+      `<img class="media-el carousel-img" data-idx="${i}" src="${src}" alt="" style="${i === 0 ? '' : 'opacity:0;'}" />`
+    ).join('');
+    const dots = asset.carousel_images.map((_, i) =>
+      `<span class="dot ${i === 0 ? 'active' : ''}" data-idx="${i}"></span>`
+    ).join('');
+    return `${imgs}<div class="carousel-dots">${dots}</div>`;
+  }
+  return '';
+}
+
+/* ================================================================
+   BUILD A CARD
+================================================================ */
+function buildCard(asset, opts = {}) {
+  const { large = false } = opts;
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.dataset.filename = asset.filename;
+
+  const phoneWrap = document.createElement('div');
+  phoneWrap.className = 'card-phone-wrap';
+
+  const iphone = document.createElement('div');
+  iphone.className = 'iphone';
+  const screen = document.createElement('div');
+  screen.className = 'screen';
+  screen.innerHTML = mediaHTML(asset) + chromeHTML(asset);
+  iphone.appendChild(screen);
+  phoneWrap.appendChild(iphone);
+  card.appendChild(phoneWrap);
+
+  // Info block (grid view)
+  if (!opts.reels) {
+    const info = document.createElement('div');
+    info.className = 'card-info';
+    const tags = [];
+    if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
+    asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
+    asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
+    info.innerHTML = `
+      <div class="card-filename">${escapeHTML(asset.filename)}</div>
+      <div class="card-tags">${tags.join('')}</div>
+    `;
+    card.appendChild(info);
+  }
+
+  // Carousel auto-advance
+  if (asset.type === 'carousel') {
+    const imgs = screen.querySelectorAll('.carousel-img');
+    const dots = screen.querySelectorAll('.carousel-dots .dot');
+    let idx = 0;
+    card._carouselInterval = setInterval(() => {
+      idx = (idx + 1) % imgs.length;
+      imgs.forEach((im, i) => im.style.opacity = (i === idx ? '1' : '0'));
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }, 2200);
+  }
+
+  return card;
+}
+
+/* ================================================================
+   AUTOPLAY / PAUSE — IntersectionObserver
+   src is set at render time; this just plays/pauses what's visible.
+   Tap-to-play overlay is shown/hidden based on playback state.
+================================================================ */
+function tryPlay(video) {
+  const overlay = video.parentElement.querySelector('[data-play-overlay]');
+  video.muted = true;
+  const p = video.play();
+  if (p && p.then) {
+    p.then(() => {
+      if (overlay) overlay.classList.add('hidden');
+    }).catch(() => {
+      if (overlay) overlay.classList.remove('hidden');
+    });
+  }
+}
+
+const videoObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const video = entry.target;
+    if (entry.isIntersecting) {
+      tryPlay(video);
+    } else {
+      video.pause();
+    }
+  });
+}, { rootMargin: '200px', threshold: 0.1 });
+
+function attachObservers(root = document) {
+  root.querySelectorAll('video.media-el').forEach(v => {
+    videoObserver.observe(v);
+    // Also try immediately — observer may not fire for videos already in viewport on first paint
+    tryPlay(v);
+
+    // Click-to-play fallback on the iPhone screen (and tap-to-play overlay)
+    const screen = v.closest('.screen');
+    if (screen && !screen.dataset.clickBound) {
+      screen.dataset.clickBound = '1';
+      screen.addEventListener('click', (e) => {
+        // If clicking the play overlay or anywhere, force play
+        tryPlay(v);
+      });
+    }
+  });
+}
+
+/* ================================================================
+   RENDER GRID
+================================================================ */
+function renderGrid() {
+  const container = document.getElementById('grid-container');
+  const empty = document.getElementById('grid-empty');
+  const filtered = filteredAssets();
+
+  // Clean up existing cards & observers
+  container.querySelectorAll('.card').forEach(c => {
+    if (c._carouselInterval) clearInterval(c._carouselInterval);
+  });
+  container.querySelectorAll('video.media-el').forEach(v => videoObserver.unobserve(v));
+  container.innerHTML = '';
+
+  document.getElementById('result-count').textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  filtered.forEach(asset => {
+    const card = buildCard(asset);
+    container.appendChild(card);
+  });
+
+  attachObservers(container);
+}
+
+/* ================================================================
+   RENDER REELS
+================================================================ */
+function renderReels() {
+  const container = document.getElementById('reels-view');
+  const filtered = filteredAssets();
+
+  container.querySelectorAll('.reel-slide').forEach(s => {
+    if (s._carouselInterval) clearInterval(s._carouselInterval);
+  });
+  container.querySelectorAll('video.media-el').forEach(v => videoObserver.unobserve(v));
+  container.innerHTML = '';
+
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty"><h3>No matches</h3><p>Try removing some filters.</p></div>';
+    return;
+  }
+
+  filtered.forEach((asset, i) => {
+    const slide = document.createElement('section');
+    slide.className = 'reel-slide';
+    slide.dataset.idx = i;
+
+    const card = buildCard(asset, { reels: true });
+    slide.appendChild(card);
+
+    // Side info panel (desktop only, via CSS)
+    const info = document.createElement('div');
+    info.className = 'reel-side-info';
+    const tags = [];
+    if (asset.brand) tags.push(`<span class="tag-chip brand">${escapeHTML(asset.brand)}</span>`);
+    asset.styles.forEach(s => tags.push(`<span class="tag-chip style">${escapeHTML(s)}</span>`));
+    asset.formats.forEach(f => tags.push(`<span class="tag-chip format">${escapeHTML(f)}</span>`));
+    info.innerHTML = `
+      <div class="filename">${escapeHTML(asset.filename)}</div>
+      <div class="tags">${tags.join('')}</div>
+    `;
+    slide.appendChild(info);
+
+    const counter = document.createElement('div');
+    counter.className = 'reel-counter';
+    counter.innerHTML = `<span class="current">${String(i + 1).padStart(2, '0')}</span> / ${String(filtered.length).padStart(2, '0')}`;
+    slide.appendChild(counter);
+
+    container.appendChild(slide);
+
+    // Pick up the carousel interval from the inner card
+    if (card._carouselInterval) slide._carouselInterval = card._carouselInterval;
+  });
+
+  // Nav hint (once)
+  if (!document.getElementById('reel-nav-hint')) {
+    const hint = document.createElement('div');
+    hint.className = 'reel-nav-hint';
+    hint.id = 'reel-nav-hint';
+    hint.innerHTML = `Scroll <span class="arrow">↓</span>`;
+    document.body.appendChild(hint);
+  }
+  document.getElementById('reel-nav-hint').style.display =
+    (state.currentTab === 'reels' && filtered.length > 1) ? 'flex' : 'none';
+
+  attachObservers(container);
+}
+
+/* ================================================================
+   FILTER CHIP RENDERING
+================================================================ */
+function renderChips(id, items, bucket) {
+  const host = document.getElementById(id);
+  host.innerHTML = '';
+  items.forEach(item => {
+    const chip = document.createElement('button');
+    chip.className = 'chip';
+    chip.textContent = item;
+    chip.addEventListener('click', () => {
+      if (state.activeFilters[bucket].has(item)) {
+        state.activeFilters[bucket].delete(item);
+        chip.classList.remove('active');
+      } else {
+        state.activeFilters[bucket].add(item);
+        chip.classList.add('active');
+      }
+      rerender();
+    });
+    host.appendChild(chip);
+  });
+}
+
+/* ================================================================
+   CLEAR & RERENDER
+================================================================ */
+function clearFilters() {
+  Object.keys(state.activeFilters).forEach(k => state.activeFilters[k].clear());
+  document.querySelectorAll('.chip.active').forEach(c => c.classList.remove('active'));
+  rerender();
+}
+
+function rerender() {
+  if (state.currentTab === 'grid') {
+    renderGrid();
+  } else {
+    renderReels();
+  }
+}
+
+/* ================================================================
+   TAB SWITCHING
+================================================================ */
+function setTab(tab) {
+  state.currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(tab + '-view').classList.add('active');
+
+  const hint = document.getElementById('reel-nav-hint');
+  if (hint) hint.style.display = (tab === 'reels' && filteredAssets().length > 1) ? 'flex' : 'none';
+
+  rerender();
+}
+
+/* ================================================================
+   INIT
+================================================================ */
+function init() {
+  // Counts
+  const videoCount = window.ASSETS.filter(a => a.type === 'video').length;
+  const imageCount = window.ASSETS.filter(a => a.type === 'image' || a.type === 'carousel').length;
+  document.getElementById('count-videos').textContent = videoCount;
+  document.getElementById('count-images').textContent = imageCount;
+  document.getElementById('count-total').textContent = window.ASSETS.length;
+
+  renderChips('filter-brands', window.FILTERS.brands, 'brands');
+  renderChips('filter-styles', window.FILTERS.styles, 'styles');
+  renderChips('filter-formats', window.FILTERS.formats, 'formats');
+  renderChips('filter-types', window.FILTERS.types, 'types');
+
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    b.addEventListener('click', () => setTab(b.dataset.tab));
+  });
+  document.getElementById('clear-btn').addEventListener('click', clearFilters);
+
+  renderGrid();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
