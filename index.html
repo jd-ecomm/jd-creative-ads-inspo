@@ -930,7 +930,7 @@
     </div>
   </div>
   <div class="filter-group">
-    <div class="filter-group-label">Brand / Inspiration Source</div>
+    <div class="filter-group-label">Brand / Creator</div>
     <div class="filter-chips" id="filter-brands"></div>
   </div>
   <div class="filter-group">
@@ -1762,11 +1762,16 @@ async function tryAutoDiscoverNewVideos() {
     if (/^JoeHughes\d+\.WEBP$/i.test(name)) return;
     // Skip if already in catalogue
     if (knownFiles.has(lower)) return;
+
+    // Parse tags; map `source` → `brand` for schema compatibility
+    const parsed = parseTagsFromFilename(name);
     newAssets.push({
       type: isVideo ? 'video' : 'image',
       filename: name,
       path: name,
-      ...parseTagsFromFilename(name),
+      brand: parsed.source,
+      styles: parsed.styles,
+      formats: parsed.formats,
       caption: 'New in. Only at JD.',
       starred: false,
       priority: null,
@@ -1819,71 +1824,159 @@ async function tryAutoDiscoverNewVideos() {
 }
 
 /* Parse tags from a filename using the same logic as the build script */
-function parseTagsFromFilename(fn) {
-  const PRODUCT_BRANDS = {
-    'Footlocker': 'Foot Locker',
-    'StockX': 'StockX',
-    'Vans': 'Vans',
-    'Browns': 'Browns',
-    'JoesHughesShoes': 'Joe Hughes',
-    'JoeHughes': 'Joe Hughes',
-    'NB': 'New Balance',
-    'DM': 'Dr Martens',
-  };
-  const CREATOR_BRANDS = {
-    'AprilLockhart': 'April Lockhart',
-    'Iconnikki': 'Iconnikki',
-  };
-  const STYLE_KEYWORDS = {
-    'UGC': 'UGC', 'Studio': 'Studio', 'InterviewStyle': 'Interview', 'Interview': 'Interview',
-  };
-  const FORMAT_KEYWORDS = {
-    'Unboxing': 'Unboxing', 'SpeaktoCamera': 'Speak to Camera', 'SpeakToCamera': 'Speak to Camera',
-    'OnFeet': 'On Feet', 'POV': 'POV', 'ProductCloseUp': 'Product Close-Up',
-    'ProductInHand': 'Product in Hand', 'ProductHero': 'Product Hero',
-    'Multiproduct': 'Multi-Product', 'MultiProduct': 'Multi-Product',
-    'Slideshow': 'Slideshow', 'CarouselStyle': 'Carousel',
-    'WebsiteScreenshot': 'Website Screenshot', 'WebScreenshot': 'Website Screenshot',
-    'SplitScreen': 'Split Screen', 'TextOverlay': 'Text Overlay',
-    'Styling': 'Styling', 'Fits': 'Fits & Styling', 'Whitespace': 'Whitespace',
-    'Transtition': 'Transitions', 'Transition': 'Transitions',
-    'Top5': 'Top 5', 'Outdoor': 'Outdoor', 'Model': 'Model', 'ebay': 'Platform Screenshot',
-  };
+/* ================================================================
+   TAG PARSER — infer brand/creator, style, and format from filename.
 
-  let brand = null;
-  const productKeys = Object.keys(PRODUCT_BRANDS).sort((a,b) => b.length - a.length);
-  for (const k of productKeys) {
-    if (fn.includes(k)) { brand = PRODUCT_BRANDS[k]; break; }
+   If you add new videos with new brands/creators/formats, add them
+   to the dictionaries below. The parser handles both '_' and '-'
+   as separators.
+
+   For videos where the filename doesn't tag cleanly, add a
+   MANUAL_OVERRIDES entry further below — that always wins.
+================================================================ */
+
+// "Sources" = brands AND creators, combined into one filter as requested.
+// Order matters: longer keys first, more specific keys first.
+// Everything listed here becomes a filter chip under "Brand / Creator".
+const SOURCES = {
+  // Product brands
+  'JoesHughesShoes': 'Joe Hughes',
+  'JoeHughes': 'Joe Hughes',
+  'Culture_Kings': 'Culture Kings',
+  'CultureKings': 'Culture Kings',
+  'JD_Sports': 'JD Sports',
+  'JDSports': 'JD Sports',
+  'BokuNoFuku': 'Boku No Fuku',
+  'Footlocker': 'Foot Locker',
+  'FootLocker': 'Foot Locker',
+  'Represent': 'Represent',
+  'StockX': 'StockX',
+  'Browns': 'Browns',
+  'Vans': 'Vans',
+  'Size': 'Size?',
+  'NB': 'New Balance',
+  'DM': 'Dr Martens',
+
+  // Creators
+  'AprilLockhart': 'April Lockhart',
+  'EmsonMallari': 'Emson Mallari',
+  'VarunDuggi': 'Varun Duggi',
+  'Iconnikki': 'Iconnikki',
+  'QHarris': 'Q Harris',
+};
+
+const STYLE_KEYWORDS = {
+  'InterviewStyle': 'Interview',
+  'Interview': 'Interview',
+  'Studio': 'Studio',
+  'UGC': 'UGC',
+};
+
+const FORMAT_KEYWORDS = {
+  // Multi-word first (more specific)
+  'SpeaktoCamera': 'Speak to Camera',
+  'SpeakToCamera': 'Speak to Camera',
+  'ProductCloseUp': 'Product Close-Up',
+  'ProductInHand': 'Product in Hand',
+  'ProductHero': 'Product Hero',
+  'ProductCompare': 'Product Compare',
+  'WebsiteScreenshot': 'Website Screenshot',
+  'WebScreenshot': 'Website Screenshot',
+  'CarouselStyle': 'Carousel',
+  'SplitScreen': 'Split Screen',
+  'TextOverlay': 'Text Overlay',
+  'StopMotion': 'Stop Motion',
+  'IfYouLike': 'If You Like',
+  'Retargeting': 'Retargeting',
+  'Rotation': 'Rotation',
+  'Multiproduct': 'Multi-Product',
+  'MultiProduct': 'Multi-Product',
+  'Unboxing': 'Unboxing',
+  'Slideshow': 'Slideshow',
+  'OnFeet': 'On Feet',
+  'Whitespace': 'Whitespace',
+  'Transtition': 'Transitions',
+  'Transition': 'Transitions',
+  'Outdoor': 'Outdoor',
+  'Styling': 'Styling',
+  'Fits': 'Fits & Styling',
+  'Top5': 'Top 5',
+  'Model': 'Model',
+  'POV': 'POV',
+  'ebay': 'Platform Screenshot',
+};
+
+// Manual overrides — keyed by exact filename. Always wins over the parser.
+// Add entries here if a filename tags wrong and you want to fix it without renaming.
+// Example:
+//   "WeirdFilename.mp4": { source: "Nike", styles: ["UGC"], formats: ["Unboxing"] }
+const MANUAL_OVERRIDES = {
+  // Add overrides here as needed
+};
+
+function parseTagsFromFilename(fn) {
+  // Manual override wins
+  if (MANUAL_OVERRIDES[fn]) {
+    const o = MANUAL_OVERRIDES[fn];
+    return {
+      source: o.source || null,
+      styles: o.styles || [],
+      formats: o.formats || [],
+    };
   }
-  if (!brand) {
-    const creatorKeys = Object.keys(CREATOR_BRANDS).sort((a,b) => b.length - a.length);
-    for (const k of creatorKeys) {
-      if (fn.includes(k)) { brand = CREATOR_BRANDS[k]; break; }
+
+  // Normalise separators: treat _ and - interchangeably for matching
+  // We search against the original filename AND a normalised version
+  const nameNoExt = fn.replace(/\.[^.]+$/, '');
+  const normalised = nameNoExt.replace(/[_-]/g, '');
+
+  // Find longest matching source key
+  let source = null;
+  const sourceKeys = Object.keys(SOURCES).sort((a, b) => b.length - a.length);
+  for (const k of sourceKeys) {
+    const kNorm = k.replace(/[_-]/g, '');
+    // Match if either the raw or normalised filename contains the key (case-sensitive)
+    if (nameNoExt.includes(k) || normalised.includes(kNorm)) {
+      source = SOURCES[k];
+      break;
     }
   }
-  // DM edge case
-  const parts = fn.split('-');
-  if (parts.includes('DM') || fn.startsWith('DM-') || fn.includes('-DM-')) brand = 'Dr Martens';
 
+  // Styles — multi-match
   const styles = [];
-  for (const [k, v] of Object.entries(STYLE_KEYWORDS)) {
-    if (fn.includes(k) && !styles.includes(v)) styles.push(v);
+  const styleKeys = Object.keys(STYLE_KEYWORDS).sort((a, b) => b.length - a.length);
+  let styleMask = nameNoExt;
+  for (const k of styleKeys) {
+    if (styleMask.includes(k)) {
+      const v = STYLE_KEYWORDS[k];
+      if (!styles.includes(v)) styles.push(v);
+      styleMask = styleMask.split(k).join('_'.repeat(k.length));
+    }
   }
+
+  // Formats — multi-match with masking to avoid sub-key false positives
   const formats = [];
-  let fnMasked = fn;
-  const fmtKeys = Object.keys(FORMAT_KEYWORDS).sort((a,b) => b.length - a.length);
+  let fmtMask = nameNoExt;
+  const fmtKeys = Object.keys(FORMAT_KEYWORDS).sort((a, b) => b.length - a.length);
   for (const k of fmtKeys) {
-    if (fnMasked.includes(k)) {
+    if (fmtMask.includes(k)) {
       const v = FORMAT_KEYWORDS[k];
       if (!formats.includes(v)) formats.push(v);
-      fnMasked = fnMasked.split(k).join('_'.repeat(k.length));
+      fmtMask = fmtMask.split(k).join('_'.repeat(k.length));
     }
   }
-  // Post-process: Vans Interview → Speak to Camera; StockX POV → UGC
-  if (fn.includes('InterviewStyle') && !formats.includes('Speak to Camera')) formats.push('Speak to Camera');
-  if (fn.includes('StockX-POV') && styles.length === 0) styles.push('UGC');
 
-  return { brand, creator: null, styles, formats };
+  // Edge cases
+  // Vans Interview-style → also tag as Speak to Camera format
+  if (nameNoExt.includes('InterviewStyle') && !formats.includes('Speak to Camera')) {
+    formats.push('Speak to Camera');
+  }
+  // StockX POV variants with no style → UGC
+  if (nameNoExt.includes('StockX') && nameNoExt.includes('POV') && styles.length === 0) {
+    styles.push('UGC');
+  }
+
+  return { source, styles, formats };
 }
 
 /* Small toast notification for background events */
